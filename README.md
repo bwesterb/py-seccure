@@ -1,15 +1,17 @@
 py-seccure
 ==========
 
-Simple Elliptic Curve Cryptography for Python
-compatible with the excellent [SECCURE](http://point-at-infinity.org/seccure/) command line utility.
+Simple Elliptic Curve Cryptography for Python compatible with the
+excellent [SECCURE](http://point-at-infinity.org/seccure/) command
+line utility.
 
 Usage
 -----
 
 ### Public key from private
 
-To get the public key from the private, you can use the original commandline utility:
+To get the public key from the private, you can use the original
+commandline utility:
 
 ```
 $ seccure-key
@@ -28,7 +30,8 @@ In Python:
 
 ### Encrypting a string
 
-To encrypt for a public key, one would use the original commandline utility as follows.
+To encrypt for a public key, one would use the original commandline
+utility as follows.
 
 ```
 $ seccure-encrypt -o private.msg '8W;>i^H0qi|J&$coR5MFpR*Vn'  
@@ -82,12 +85,13 @@ Installation
     $ port install gmp
     $ pip install seccure
 
-Contribute
-----------
+Please contribute!
+------------------
 
 To help out, you could:
 
 1.  Test and report any bugs or other difficulties.
-2.  Implement missing features, such as `seccure-sign`, `seccure-verify` and `seccure-dh`.
+2.  Implement missing features, such as `seccure-sign`, `seccure-verify`
+    and `seccure-dh`.
 3.  Package py-seccure (or the original SECCURE itself) for your platform.
 4.  Write more unit tests.
