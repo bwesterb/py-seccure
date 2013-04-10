@@ -95,3 +95,9 @@ To help out, you could:
     and `seccure-dh`.
 3.  Package py-seccure (or the original SECCURE itself) for your platform.
 4.  Write more unit tests.
+
+
+[![Build Status](https://travis-ci.org/bwesterb/py-seccure.png)](
+   https://travis-ci.org/py-seccure/pol)
+      
+<!-- vim: set shiftwidth=4:tabstop=4:expandtab: -->
