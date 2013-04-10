@@ -551,8 +551,3 @@ def decrypt(s, passphrase, curve='secp160r1'):
 def passphrase_to_pubkey(passphrase, curve='secp160r1'):
     curve = Curve.by_name(curve)
     return curve.passphrase_to_pubkey(passphrase)
-
-if __name__ == '__main__':
-    enc = encrypt('omg', '*jMVCU^[QC&q*v_8C1ZAFBAgD')
-    print decrypt(enc, 'test')
-    print passphrase_to_pubkey('test')
