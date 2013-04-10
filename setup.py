@@ -16,7 +16,7 @@ setup(
     author='Bas Westerbaan',
     author_email='bas@westerbaan.name',
     url='http://github.com/bwesterb/py-seccure',
-    packages=['seccure'],
+    packages=['seccure', 'seccure.tests'],
     package_dir={'seccure': 'src'},
     license='GPL 3.0',
     install_requires=install_requires,
