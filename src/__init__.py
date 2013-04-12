@@ -485,6 +485,11 @@ class Curve(object):
         self.elem_len_bin = get_serialized_number_len(self.m, SER_BINARY)
         self.order_len_bin = get_serialized_number_len(self.order, SER_BINARY)
 
+    @property
+    def key_bytes(self):
+        """ The approximate number of bytes of information in a key. """
+        return self.pk_len_bin
+
     def __repr__(self):
         return "<Curve %s>" % self.name
 
