@@ -338,13 +338,13 @@ class AffinePoint(object):
         return serialize_number(self.x, fmt, outlen)
     def _point_compress(self):
         return self.y.getbit(0) == 1
-    def ECIES_KDF(self, R):
+    def _ECIES_KDF(self, R):
         h = hashlib.sha512()
         h.update(serialize_number(self.x, SER_BINARY, self.curve.elem_len_bin))
         h.update(serialize_number(R.x, SER_BINARY,self.curve.elem_len_bin))
         h.update(serialize_number(R.y, SER_BINARY,self.curve.elem_len_bin))
         return h.digest()
-    def ECIES_encryption(self):
+    def _ECIES_encryption(self):
         while True:
             k = gmpy.mpz(Crypto.Random.random.randrange(0,
                             int(self.curve.order - 1)))
@@ -353,15 +353,17 @@ class AffinePoint(object):
             Z = self * k
             if Z:
                 break
-        return (Z.ECIES_KDF(R), R)
-    def ECIES_decryption(self, d):
+        return (Z._ECIES_KDF(R), R)
+    def _ECIES_decryption(self, d):
+        if isinstance(d, PrivKey):
+            d = d.e
         e = d * self.curve.cofactor
         if not self.valid_embedded_key:
             raise ValueError
         Z = self * e
         if not Z:
             raise ValueError
-        return Z.ECIES_KDF(self)
+        return Z._ECIES_KDF(self)
     @property
     def valid_embedded_key(self):
         if (self.x < 0 or self.x >= self.curve.m or self.y < 0 or
@@ -373,9 +375,14 @@ class AffinePoint(object):
             return False
         return True
 
+class PubKey(object):
+    """ A public affine point """
+    def __init__(self, p):
+        self.p = p
+
     @contextlib.contextmanager
     def encrypt_to(self, f, mac_bytes=10):
-        ctx = EncryptionContext(f, self, mac_bytes)
+        ctx = EncryptionContext(f, self.p, mac_bytes)
         yield ctx
         ctx.finish()
 
@@ -385,6 +392,33 @@ class AffinePoint(object):
             f.write(s)
         return out.getvalue()
 
+    def to_string(self, fmt=SER_BINARY):
+        return self.p.to_string(fmt)
+    def __str__(self):
+        return str(self.p)
+    def __repr__(self):
+        return "<PubKey %s>" % str(self)
+
+class PrivKey(object):
+    """ A secret exponent """
+    def __init__(self, e, curve):
+        self.e = e
+        self.curve = curve
+    @contextlib.contextmanager
+    def decrypt_from(self, f, mac_bytes=10):
+        """ Decrypts a message from f. """
+        ctx = DecryptionContext(self.curve, f, self, mac_bytes)
+        yield ctx
+        ctx.read()
+    def decrypt(self, s, mac_bytes=10):
+        instream = StringIO.StringIO(s)
+        with self.decrypt_from(instream, mac_bytes) as f:
+            return f.read()
+    def __repr__(self):
+        return "<PrivKey %s>" % self.e
+    def __str__(self):
+        return str(self.e)
+
 # Encryption and decryption contexts
 # #########################################################
 class EncryptionContext(object):
@@ -392,7 +426,7 @@ class EncryptionContext(object):
     def __init__(self, f, p, mac_bytes=10):
         self.f = f
         self.mac_bytes = mac_bytes
-        key, R = p.ECIES_encryption()
+        key, R = p._ECIES_encryption()
         self.h = hmac.new(key[32:], digestmod=hashlib.sha256)
         f.write(R.to_string(SER_BINARY))
         ctr = Crypto.Util.Counter.new(128, initial_value=0)
@@ -415,7 +449,7 @@ class DecryptionContext(object):
         self.f = f
         self.mac_bytes = mac_bytes
         R = curve.point_from_string(f.read(curve.pk_len_bin), SER_BINARY)
-        key = R.ECIES_decryption(privkey)
+        key = R._ECIES_decryption(privkey)
         self.h = hmac.new(key[32:], digestmod=hashlib.sha256)
         ctr = Crypto.Util.Counter.new(128, initial_value=0)
         self.cipher = Crypto.Cipher.AES.new(key[:32],
@@ -500,6 +534,8 @@ class Curve(object):
             x = x - self.m
         assert 0 < x and x <= self.m
         return self._point_decompress(x, yflag)
+    def pubkey_from_string(self, s, fmt=SER_BINARY):
+        return PubKey(self.point_from_string(s, fmt))
     def _point_decompress(self, x, yflag):
         m = self.m
         h = (x * x) % m
@@ -523,10 +559,10 @@ class Curve(object):
         a = (a % (self.order - 1)) + 1
         return a
     def passphrase_to_pubkey(self, passphrase):
-        return self.base * self.passphrase_to_privkey(passphrase)
+        return PubKey(self.base * self.passphrase_to_privkey(passphrase).e)
     def passphrase_to_privkey(self, passphrase):
-        h = passphrase_to_hash(passphrase)
-        return self.hash_to_exponent(h)
+        h = _passphrase_to_hash(passphrase)
+        return PrivKey(self.hash_to_exponent(h), self)
     @contextlib.contextmanager
     def decrypt_from(self, f, privkey, mac_bytes=10):
         ctx = DecryptionContext(self, f, privkey, mac_bytes)
@@ -539,19 +575,19 @@ class Curve(object):
 
 # Helpers
 # #########################################################
-def passphrase_to_hash(passphrase):
+def _passphrase_to_hash(passphrase):
     """ Converts a passphrase to a hash. """
     return hashlib.sha256(passphrase).digest()
 
 def encrypt(s, pk, pk_format=SER_COMPACT, mac_bytes=10):
     curve = Curve.by_pk_len(len(pk))
-    p = curve.point_from_string(pk, pk_format)
+    p = curve.pubkey_from_string(pk, pk_format)
     return p.encrypt(s, mac_bytes)
 
-def decrypt(s, passphrase, curve='secp160r1'):
+def decrypt(s, passphrase, curve='secp160r1', mac_bytes=10):
     curve = Curve.by_name(curve)
     privkey = curve.passphrase_to_privkey(passphrase)
-    return curve.decrypt(s, privkey)
+    return privkey.decrypt(s, mac_bytes)
 
 def passphrase_to_pubkey(passphrase, curve='secp160r1'):
     curve = Curve.by_name(curve)
