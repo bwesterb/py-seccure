@@ -49,6 +49,7 @@ In Python:
 '\x00\x146\x17\xe9\xc1\x1a\x7fkX\xec\xa0n,h\xb4\xd0\x98\xeaO[\xf8\xfa\x85\xaa\xb37!\xf0j\x0e\xd4\xd0\x8b\xfe}\x8a\xd2+\xf2\xceu\x07\x90K2E\x12\x1d\xf1\xd8\x8f\xc6\x91\t<w\x99\x1b9\x98'
 ```
 
+### Decrypting
 To decrypt the message with the original utility:
 
 ```
@@ -65,6 +66,24 @@ In Python:
 ```python
 >>> seccure.decrypt(ciphertext, 'my private key')
 'This is a very secret message\n'
+```
+
+### Verifying a signature
+To verify a signate:
+
+```
+$ seccure-verify '8W;>i^H0qi|J&$coR5MFpR*Vn' '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'  
+Go ahead and type your message ...
+This message will be signed
+^D
+Signature successfully verified!
+```
+
+In Python:
+
+```python
+>>> seccure.verify('This message will be signed\n', '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq', '8W;>i^H0qi|J&$coR5MFpR*Vn')
+True
 ```
 
 Installation
@@ -91,7 +110,7 @@ Please contribute!
 To help out, you could:
 
 1.  Test and report any bugs or other difficulties.
-2.  Implement missing features, such as `seccure-sign`, `seccure-verify`
+2.  Implement missing features, such as `seccure-sign`,
     and `seccure-dh`.
 3.  Package py-seccure (or the original SECCURE itself) for your platform.
 4.  Write more unit tests.

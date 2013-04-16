@@ -14,6 +14,11 @@ class TestMain(unittest.TestCase):
         self.assertEqual(seccure.decrypt(seccure.encrypt(msg,
                         str(seccure.passphrase_to_pubkey(pw))),
                             'my private key'), msg)
+    def test_verify(self):
+        msg = 'This message will be signed\n'
+        sig = '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'
+        pubkey = '8W;>i^H0qi|J&$coR5MFpR*Vn'
+        self.assertTrue(seccure.verify(msg, sig, pubkey))
 
 if __name__ == '__main__':
     unittest.main()

@@ -323,6 +323,30 @@ class AffinePoint(object):
         R = r.to_affine()
         assert R.on_curve
         return R
+    def __add__(self, other):
+        if not isinstance(other, AffinePoint):
+            raise NotImplementedError
+        if not other:
+            return self
+        if not self:
+            return other
+        if self.x == other.x:
+            if self.y == other.y:
+                return self.double()
+            return AffinePoint(x=0, y=0, curve=self.curve)
+        m = self.curve.m
+        t = (self.y - other.y) % m
+        y = (self.x - other.x) % m
+        y = gmpy.invert(y, m)
+        y = (t * y) % m
+        t = (y * y) % m
+        x = (self.x + other.x) % m
+        x = (t - x) % m
+        t = (other.x - x) % m
+        y = (y * t) % m
+        y = (y - other.y) % m
+        return AffinePoint(x=x, y=y, curve=self.curve)
+
     def __nonzero__(self):
         return bool(self.x or self.y)
     def __repr__(self):
@@ -364,6 +388,22 @@ class AffinePoint(object):
         if not Z:
             raise ValueError
         return Z._ECIES_KDF(self)
+    def _ECDSA_verify(self, md, sig):
+        order = self.curve.order
+        s, r = divmod(sig, order)
+        if s <= 0  or order <= s or r <= 0 or order <= r:
+            return False
+        e = deserialize_number(md, SER_BINARY) % order
+        s = gmpy.invert(s, order)
+        e = (e * s) % order
+        X1 = self.curve.base * e
+        e = (r * s) % order
+        X2 = self * e
+        X1 = X1 + X2
+        if not X1:
+            return False
+        s = X1.x % order
+        return s == r
     @property
     def valid_embedded_key(self):
         if (self.x < 0 or self.x >= self.curve.m or self.y < 0 or
@@ -380,13 +420,22 @@ class PubKey(object):
     def __init__(self, p):
         self.p = p
 
+    def verify(self, h, sig, sig_fmt=SER_BINARY):
+        """ Verifies that `sig' is a signature for a message with
+            SHA-512 hash `h'. """
+        s = deserialize_number(sig, sig_fmt)
+        return self.p._ECDSA_verify(h, s)
+
     @contextlib.contextmanager
     def encrypt_to(self, f, mac_bytes=10):
+        """ Returns a file like object `ef'.  Anything written to `ef'
+            will be encrypted for this pubkey and written to `f'. """
         ctx = EncryptionContext(f, self.p, mac_bytes)
         yield ctx
         ctx.finish()
 
     def encrypt(self, s, mac_bytes=10):
+        """ Encrypt `s' for this pubkey. """
         out = StringIO.StringIO()
         with self.encrypt_to(out, mac_bytes) as f:
             f.write(s)
@@ -580,14 +629,23 @@ def _passphrase_to_hash(passphrase):
     return hashlib.sha256(passphrase).digest()
 
 def encrypt(s, pk, pk_format=SER_COMPACT, mac_bytes=10):
+    """ Encrypts `s' for public key `pk' """
     curve = Curve.by_pk_len(len(pk))
     p = curve.pubkey_from_string(pk, pk_format)
     return p.encrypt(s, mac_bytes)
 
 def decrypt(s, passphrase, curve='secp160r1', mac_bytes=10):
+    """ Decrypts `s' with passphrase `passphrase' """
     curve = Curve.by_name(curve)
     privkey = curve.passphrase_to_privkey(passphrase)
     return privkey.decrypt(s, mac_bytes)
+
+def verify(s, sig, pk, sig_format=SER_COMPACT, pk_format=SER_COMPACT):
+    """ Verifies that `sig' is a signature of pubkey `pk' for the
+        message `s'. """
+    curve = Curve.by_pk_len(len(pk))
+    p = curve.pubkey_from_string(pk, pk_format)
+    return p.verify(hashlib.sha512(s).digest(), sig, sig_format)
 
 def passphrase_to_pubkey(passphrase, curve='secp160r1'):
     curve = Curve.by_name(curve)
