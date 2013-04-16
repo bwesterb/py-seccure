@@ -463,10 +463,41 @@ class PrivKey(object):
         instream = StringIO.StringIO(s)
         with self.decrypt_from(instream, mac_bytes) as f:
             return f.read()
+    def sign(self, h, sig_format=SER_BINARY):
+        """ Signs the message with SHA-512 hash `h' with this private key. """
+        sig = self._ECDSA_sign(h)
+        return serialize_number(sig, sig_format)
     def __repr__(self):
         return "<PrivKey %s>" % self.e
     def __str__(self):
         return str(self.e)
+    def _ECDSA_sign(self, md):
+        # Get the pseudo-random exponent from the messagedigest
+        # and the private key.
+        order = self.curve.order
+        hmk = serialize_number(self.e, SER_BINARY, self.curve.order_len_bin)
+        h = hmac.new(hmk, digestmod=hashlib.sha256)
+        h.update(md)
+        ctr = Crypto.Util.Counter.new(128, initial_value=0)
+        cprng = Crypto.Cipher.AES.new(h.digest(),
+                    Crypto.Cipher.AES.MODE_CTR, counter=ctr)
+        r = 0
+        s = 0
+        while s == 0:
+            while r == 0:
+                buf = cprng.encrypt('\0'*self.curve.order_len_bin)
+                k = self.curve._buf_to_exponent(buf)
+                p1 = self.curve.base * k
+                r = p1.x % order
+            e = deserialize_number(md, SER_BINARY)
+            e = (e % order)
+            s = (self.e * r) % order
+            s = (s + e) % order
+            e = gmpy.invert(k, order)
+            s = (s * e) % order
+        s = s * order
+        s = s + r
+        return s
 
 # Encryption and decryption contexts
 # #########################################################
@@ -646,6 +677,12 @@ def verify(s, sig, pk, sig_format=SER_COMPACT, pk_format=SER_COMPACT):
     curve = Curve.by_pk_len(len(pk))
     p = curve.pubkey_from_string(pk, pk_format)
     return p.verify(hashlib.sha512(s).digest(), sig, sig_format)
+
+def sign(s, passphrase, sig_format=SER_COMPACT, curve='secp160r1'):
+    """ Signs `s' with passphrase `passphrase' """
+    curve = Curve.by_name(curve)
+    privkey = curve.passphrase_to_privkey(passphrase)
+    return privkey.sign(hashlib.sha512(s).digest(), sig_format)
 
 def passphrase_to_pubkey(passphrase, curve='secp160r1'):
     curve = Curve.by_name(curve)

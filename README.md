@@ -68,8 +68,28 @@ In Python:
 'This is a very secret message\n'
 ```
 
+### Creating a signature
+To create a signature:
+
+```
+$ seccure-sign
+Assuming curve p160.
+Enter private key: my private key
+Go ahead and type your message ...
+This message will be signed
+^D
+Signature: $HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq
+```
+
+In Python:
+
+```python
+>>> seccure.sign('This message will be signed\n', 'my private key')
+'$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'
+```
+
 ### Verifying a signature
-To verify a signate:
+To verify a signature:
 
 ```
 $ seccure-verify '8W;>i^H0qi|J&$coR5MFpR*Vn' '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'  
@@ -110,8 +130,8 @@ Please contribute!
 To help out, you could:
 
 1.  Test and report any bugs or other difficulties.
-2.  Implement missing features, such as `seccure-sign`,
-    and `seccure-dh`.
+2.  Implement missing features, such as `seccure-dh`, `seccure-veridec`
+            and `seccure-signcrypt`.
 3.  Package py-seccure (or the original SECCURE itself) for your platform.
 4.  Write more unit tests.
 

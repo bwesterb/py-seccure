@@ -19,6 +19,11 @@ class TestMain(unittest.TestCase):
         sig = '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'
         pubkey = '8W;>i^H0qi|J&$coR5MFpR*Vn'
         self.assertTrue(seccure.verify(msg, sig, pubkey))
+    def test_sign(self):
+        msg = 'This message will be signed\n'
+        pw = 'my private key'
+        self.assertEqual(seccure.sign(msg, pw),
+                '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq')
 
 if __name__ == '__main__':
     unittest.main()
