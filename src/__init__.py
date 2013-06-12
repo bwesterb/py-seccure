@@ -671,6 +671,38 @@ def decrypt(s, passphrase, curve='secp160r1', mac_bytes=10):
     privkey = curve.passphrase_to_privkey(passphrase)
     return privkey.decrypt(s, mac_bytes)
 
+def encrypt_file(in_file, out_file, pk, pk_format=SER_COMPACT,
+                 mac_bytes=10, chunk_size=4096):
+    """ Encrypts `in_file' to `out_file' for public key `pk' """
+    curve = Curve.by_pk_len(len(pk))
+    p = curve.pubkey_from_string(pk, pk_format)
+    with open(out_file, "wb") as out_handler:
+        with p.encrypt_to(out_handler, mac_bytes) as encrypted_out:
+            with open(in_file, "rb") as in_handler:
+                while 1:
+                    buff = in_handler.read(chunk_size)
+                    if buff:
+                        encrypted_out.write(buff)
+                    else:
+                        break
+    return out_file
+
+def decrypt_file(in_file, out_file, passphrase, curve='secp160r1',
+                 mac_bytes=10, chunk_size=4096):
+    """ Decrypts `in_file' to `out_file' with passphrase `passphrase' """
+    curve = Curve.by_name(curve)
+    privkey = curve.passphrase_to_privkey(passphrase)
+    with open(out_file, "wb") as out_handler:
+        with open(in_file, "rb") as in_handler:
+            with privkey.decrypt_from(in_handler, mac_bytes) as decrypted_in:
+                while 1:
+                    buff = decrypted_in.read(chunk_size)
+                    if buff:
+                        out_handler.write(buff)
+                    else:
+                        break
+    return out_file
+
 def verify(s, sig, pk, sig_format=SER_COMPACT, pk_format=SER_COMPACT):
     """ Verifies that `sig' is a signature of pubkey `pk' for the
         message `s'. """

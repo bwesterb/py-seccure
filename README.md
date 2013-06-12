@@ -49,6 +49,13 @@ In Python:
 '\x00\x146\x17\xe9\xc1\x1a\x7fkX\xec\xa0n,h\xb4\xd0\x98\xeaO[\xf8\xfa\x85\xaa\xb37!\xf0j\x0e\xd4\xd0\x8b\xfe}\x8a\xd2+\xf2\xceu\x07\x90K2E\x12\x1d\xf1\xd8\x8f\xc6\x91\t<w\x99\x1b9\x98'
 ```
 
+You can also encrypt file directly:
+
+```python
+>>> seccure.encrypt_file('/path/to/file',  '/path/to/file.enc', '8W;>i^H0qi|J&$coR5MFpR*Vn')
+'/path/to/file.enc'
+```
+
 ### Decrypting
 To decrypt the message with the original utility:
 
@@ -66,6 +73,14 @@ In Python:
 ```python
 >>> seccure.decrypt(ciphertext, 'my private key')
 'This is a very secret message\n'
+```
+
+And to decrypt a file:
+
+```python
+>>> seccure.decrypt_file('/path/to/file.enc',  '/path/to/file', 'my private key')
+'/path/to/file'
+''
 ```
 
 ### Creating a signature
