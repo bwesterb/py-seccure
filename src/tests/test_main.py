@@ -26,13 +26,14 @@ class TestMain(unittest.TestCase):
         self.assertEqual(seccure.sign(msg, pw),
                 '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq')
 
-    def test_encrypt_file(self):
+    def test_encrypt_file_named(self):
         msg = 'My private message'
         pw = 'my private key'
         pubkey = '8W;>i^H0qi|J&$coR5MFpR*Vn'
 
         in_file = tempfile.NamedTemporaryFile()
         in_file.write(msg)
+        in_file.flush()
         in_file.seek(0)
 
         encrypted_file = tempfile.NamedTemporaryFile()
@@ -44,6 +45,24 @@ class TestMain(unittest.TestCase):
 
         self.assertEqual(msg, decrypted_file.read())
 
+    def test_encrypt_file(self):
+        msg = 'My private message'
+        pw = 'my private key'
+        pubkey = '8W;>i^H0qi|J&$coR5MFpR*Vn'
+
+        encrypted_file = tempfile.NamedTemporaryFile()
+        decrypted_file = tempfile.NamedTemporaryFile(delete=False)
+
+        with open(decrypted_file.name, 'wb') as fo:
+            fo.write(msg)
+        with open(decrypted_file.name, 'rb') as fi, \
+             open(encrypted_file.name, 'wb') as fo:
+            seccure.encrypt_file(fi, fo, pubkey)
+        with open(decrypted_file.name, 'wb') as fo, \
+             open(encrypted_file.name, 'rb') as fi:
+            seccure.decrypt_file(fi, fo, pw)
+        with open(decrypted_file.name, 'rb') as fi:
+            self.assertEqual(msg, fi.read())
 
 if __name__ == '__main__':
     unittest.main()
