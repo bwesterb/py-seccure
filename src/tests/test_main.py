@@ -55,12 +55,12 @@ class TestMain(unittest.TestCase):
 
         with open(decrypted_file.name, 'wb') as fo:
             fo.write(msg)
-        with open(decrypted_file.name, 'rb') as fi, \
-             open(encrypted_file.name, 'wb') as fo:
-            seccure.encrypt_file(fi, fo, pubkey)
-        with open(decrypted_file.name, 'wb') as fo, \
-             open(encrypted_file.name, 'rb') as fi:
-            seccure.decrypt_file(fi, fo, pw)
+        with open(decrypted_file.name, 'rb') as fi:
+            with open(encrypted_file.name, 'wb') as fo:
+                seccure.encrypt_file(fi, fo, pubkey)
+        with open(decrypted_file.name, 'wb') as fo:
+            with open(encrypted_file.name, 'rb') as fi:
+                seccure.decrypt_file(fi, fo, pw)
         with open(decrypted_file.name, 'rb') as fi:
             self.assertEqual(msg, fi.read())
 
