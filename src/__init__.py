@@ -9,10 +9,7 @@ import binascii
 import contextlib
 import collections
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import StringIO
+from six.moves import cStringIO as StringIO
 
 # PyCrypto
 import Crypto.Util
