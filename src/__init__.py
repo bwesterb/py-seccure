@@ -67,11 +67,16 @@ def deserialize_number(s, fmt=SER_BINARY):
     """ Deserializes a number from a string `s' in format `fmt' """
     ret = gmpy.mpz(0)
     if fmt == SER_BINARY:
+        if isinstance(s, six.text_type):
+            raise ValueError("Encode `s` to a bytestring yourself to"+
+                         " prevent problems with different default encodings")
         for c in s:
             ret *= 256
             ret += byte2int(c)
         return ret
     assert fmt == SER_COMPACT
+    if isinstance(s, six.text_type):
+        s = s.encode('ascii')
     for c in s:
         ret *= len(COMPACT_DIGITS)
         ret += R_COMPACT_DIGITS[c]
