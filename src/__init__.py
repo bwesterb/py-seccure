@@ -39,14 +39,14 @@ for i, c in enumerate(COMPACT_DIGITS):
 
 def serialize_number(x, fmt=SER_BINARY, outlen=None):
     """ Serializes `x' to a string of length `outlen' in format `fmt' """
-    ret = ''
+    ret = b''
     if fmt == SER_BINARY:
         while x:
             x, r = divmod(x, 256)
-            ret = chr(r) + ret
+            ret = six.int2byte(r) + ret
         if outlen is not None:
             assert len(ret) <= outlen
-            ret = ret.rjust(outlen, '\0')
+            ret = ret.rjust(outlen, b'\0')
         return ret
     assert fmt == SER_COMPACT
     while x:
@@ -488,7 +488,7 @@ class PrivKey(object):
         s = 0
         while s == 0:
             while r == 0:
-                buf = cprng.encrypt('\0'*self.curve.order_len_bin)
+                buf = cprng.encrypt(b'\0'*self.curve.order_len_bin)
                 k = self.curve._buf_to_exponent(buf)
                 p1 = self.curve.base * k
                 r = p1.x % order
@@ -635,7 +635,7 @@ class Curve(object):
         ctr = Crypto.Util.Counter.new(128, initial_value=0)
         cipher = Crypto.Cipher.AES.new(h,
                     Crypto.Cipher.AES.MODE_CTR, counter=ctr)
-        buf = cipher.encrypt('\0' * self.order_len_bin)
+        buf = cipher.encrypt(b'\0' * self.order_len_bin)
         return self._buf_to_exponent(buf)
     def _buf_to_exponent(self, buf):
         a = deserialize_number(buf, SER_BINARY)
