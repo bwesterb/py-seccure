@@ -9,7 +9,9 @@ import binascii
 import contextlib
 import collections
 
+# six
 from six.moves import cStringIO as StringIO
+import six
 
 # PyCrypto
 import Crypto.Util
@@ -560,7 +562,7 @@ class Curve(object):
 
     @staticmethod
     def by_name(name):
-        for raw_curve in RAW_CURVES.itervalues():
+        for raw_curve in six.itervalues(RAW_CURVES):
             if raw_curve[0] == name:
                 return Curve(raw_curve)
         raise KeyError
