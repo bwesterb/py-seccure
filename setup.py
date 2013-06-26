@@ -7,6 +7,7 @@ from get_git_version import get_git_version
 install_requires = [
     'pycrypto >=2.6',        # TODO do we need this version
     'gmpy >=1.15, <2',       #      ibidem
+    'six >=1.2',             #      ibidem
         ]
 
 setup(
