@@ -147,20 +147,20 @@ raw_curve_parameters = collections.namedtuple('raw_curve_parameters',
             ('name', 'a', 'b', 'm', 'base_x', 'base_y', 'order', 'cofactor'))
 RAW_CURVES = {
     18 : ("secp112r1",
-        b"db7c2abf62e35e668076bead2088", 
-        b"659ef8ba043916eede8911702b22", 
+        b"db7c2abf62e35e668076bead2088",
+        b"659ef8ba043916eede8911702b22",
         b"db7c2abf62e35e668076bead208b",
         b"09487239995a5ee76b55f9c2f098",
-        b"a89ce5af8724c0a23e0e0ff77500", 
+        b"a89ce5af8724c0a23e0e0ff77500",
         b"db7c2abf62e35e7628dfac6561c5", 1),
     20: ("secp128r1",
-        b"fffffffdfffffffffffffffffffffffc", 
-        b"e87579c11079f43dd824993c2cee5ed3", 
+        b"fffffffdfffffffffffffffffffffffc",
+        b"e87579c11079f43dd824993c2cee5ed3",
         b"fffffffdffffffffffffffffffffffff",
-        b"161ff7528b899b2d0c28607ca52c5b86", 
+        b"161ff7528b899b2d0c28607ca52c5b86",
         b"cf5ac8395bafeb13c02da292dded7a83",
         b"fffffffe0000000075a30d1b9038a115", 1),
-    25: ("secp160r1", 
+    25: ("secp160r1",
         b"ffffffffffffffffffffffffffffffff7ffffffc",
         b"1c97befc54bd7a8b65acf89f81d4d4adc565fa45",
         b"ffffffffffffffffffffffffffffffff7fffffff",
@@ -169,7 +169,7 @@ RAW_CURVES = {
         b"0100000000000000000001f4c8f927aed3ca752257", 1),
     30: ("secp192r1/nistp192",
         b"fffffffffffffffffffffffffffffffefffffffffffffffc",
-        b"64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1", 
+        b"64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1",
         b"fffffffffffffffffffffffffffffffeffffffffffffffff",
         b"188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012",
         b"07192b95ffc8da78631011ed6b24cdd573f977a11e794811",
@@ -182,23 +182,23 @@ RAW_CURVES = {
         b"bd376388b5f723fb4c22dfe6cd4375a05a07476444d5819985007e34",
         b"ffffffffffffffffffffffffffff16a2e0b8f03e13dd29455c5c2a3d", 1),
     40: ("secp256r1/nistp256",
-        b"ffffffff00000001000000000000000000000000fffffffffffffffffffffffc", 
-        b"5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b", 
+        b"ffffffff00000001000000000000000000000000fffffffffffffffffffffffc",
+        b"5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b",
         b"ffffffff00000001000000000000000000000000ffffffffffffffffffffffff",
-        b"6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", 
-        b"4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5", 
+        b"6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296",
+        b"4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5",
         b"ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551", 1),
     60: ("secp384r1/nistp384",
         b"fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe"+
             b"ffffffff0000000000000000fffffffc",
         b"b3312fa7e23ee7e4988e056be3f82d19181d9c6efe8141120314088f5013875a"+
-            b"c656398d8a2ed19d2a85c8edd3ec2aef", 
+            b"c656398d8a2ed19d2a85c8edd3ec2aef",
         b"fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe"+
             b"ffffffff0000000000000000ffffffff",
         b"aa87ca22be8b05378eb1c71ef320ad746e1d3b628ba79b9859f741e082542a38"+
             b"5502f25dbf55296c3a545e3872760ab7",
         b"3617de4a96262c6f5d9e98bf9292dc29f8f41dbd289a147ce9da3113b5f0b8c0"+
-            b"0a60b1ce1d7e819d7a431d7c90ea0e5f", 
+            b"0a60b1ce1d7e819d7a431d7c90ea0e5f",
         b"ffffffffffffffffffffffffffffffffffffffffffffffffc7634d81f4372ddf"+
             b"581a0db248b0a77aecec196accc52973", 1),
     81: ("secp521r1/nistp521",
@@ -301,7 +301,7 @@ class JacobianPoint(object):
         y = (y * t2) % m
         y = (y - t1) % m
         return JacobianPoint(x=x, y=y, z=z, curve=self.curve)
-        
+
     def __repr__(self):
         return "<JacobianPoint (%s, %s, %s) of %s>" % (
                             self.x, self.y, self.z, self.curve.name)
@@ -598,7 +598,7 @@ class Curve(object):
 
             Use `Curve.by_pk_len' instead """
         r = raw_curve_parameters(*raw_curve_params)
-        
+
         # Store domain parameters
         self.name = r.name
         self.a = deserialize_number(binascii.unhexlify(r.a), SER_BINARY)
