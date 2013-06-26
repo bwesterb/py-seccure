@@ -79,11 +79,11 @@ def deserialize_number(s, fmt=SER_BINARY):
 
 def get_serialized_number_len(x, fmt=SER_BINARY):
     if fmt == SER_BINARY:
-        return (x.numdigits(2) + 7) / 8
+        return (x.numdigits(2) + 7) // 8
     assert fmt == SER_COMPACT
     res = 0
     while x != 0:
-        x = x / len(COMPACT_DIGITS)
+        x = x // len(COMPACT_DIGITS)
         res += 1
     return res
 
@@ -94,7 +94,7 @@ def mod_issquare(a, p):
     """ Returns whether `a' is a square modulo p """
     if not a:
         return True
-    p1 = p / 2
+    p1 = p // 2
     p2 = pow(a, p1, p)
     return p2 == 1
 
@@ -602,7 +602,7 @@ class Curve(object):
                                 (self.order * self.order) - 1, SER_BINARY)
         self.sig_len_compact = get_serialized_number_len(
                                 (self.order * self.order) - 1, SER_COMPACT)
-        self.dh_len_bin = min((self.order.numdigits(2) / 2 + 7) / 8, 32)
+        self.dh_len_bin = min((self.order.numdigits(2) // 2 + 7) // 8, 32)
         self.dh_len_compact = get_serialized_number_len(
                                 2 ** self.dh_len_bin - 1, SER_COMPACT)
         self.elem_len_bin = get_serialized_number_len(self.m, SER_BINARY)
