@@ -366,6 +366,8 @@ class AffinePoint(object):
 
     def __nonzero__(self):
         return bool(self.x or self.y)
+    __bool__ = __nonzero__
+
     def __repr__(self):
         return "<AffinePoint (%s, %s) of %s>" % (
                             self.x, self.y, self.curve.name)
