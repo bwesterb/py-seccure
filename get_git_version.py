@@ -101,5 +101,4 @@ def get_git_version(abbrev=4):
 
 
 if __name__ == "__main__":
-    print get_git_version()
-
+    print(str(get_git_version()))
