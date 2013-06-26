@@ -24,7 +24,7 @@ In Python:
 
 ```python
 >>> import seccure
->>> str(seccure.passphrase_to_pubkey('my private key'))
+>>> str(seccure.passphrase_to_pubkey(b'my private key'))
 '8W;>i^H0qi|J&$coR5MFpR*Vn'
 ```
 
@@ -71,14 +71,14 @@ Integrity check successful, message unforged!
 In Python:
 
 ```python
->>> seccure.decrypt(ciphertext, 'my private key')
+>>> seccure.decrypt(ciphertext, b'my private key')
 'This is a very secret message\n'
 ```
 
 And to decrypt a file:
 
 ```python
->>> seccure.decrypt_file('/path/to/file.enc',  '/path/to/file', 'my private key')
+>>> seccure.decrypt_file('/path/to/file.enc',  '/path/to/file', b'my private key')
 '/path/to/file'
 ''
 ```
@@ -99,7 +99,7 @@ Signature: $HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq
 In Python:
 
 ```python
->>> seccure.sign('This message will be signed\n', 'my private key')
+>>> seccure.sign('This message will be signed\n', b'my private key')
 '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'
 ```
 

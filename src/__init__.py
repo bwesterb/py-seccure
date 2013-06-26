@@ -650,6 +650,9 @@ class Curve(object):
     def passphrase_to_pubkey(self, passphrase):
         return PubKey(self.base * self.passphrase_to_privkey(passphrase).e)
     def passphrase_to_privkey(self, passphrase):
+        if isinstance(passphrase, six.text_type):
+            raise ValueError("Encode `passphrase` to a bytestring yourself to"+
+                         " prevent problems with different default encodings")
         h = _passphrase_to_hash(passphrase)
         return PrivKey(self.hash_to_exponent(h), self)
     @contextlib.contextmanager

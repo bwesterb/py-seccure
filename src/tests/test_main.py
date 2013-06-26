@@ -5,16 +5,17 @@ import seccure
 
 class TestMain(unittest.TestCase):
     def test_passphrase_to_pubkey(self):
-        self.assertEqual(str(seccure.passphrase_to_pubkey('test')),
+        self.assertEqual(str(seccure.passphrase_to_pubkey(b'test')),
                                 '*jMVCU^[QC&q*v_8C1ZAFBAgD')
-        self.assertEqual(str(seccure.passphrase_to_pubkey('my private key')),
+        self.assertEqual(str(seccure.passphrase_to_pubkey(b'my private key')),
                                 '8W;>i^H0qi|J&$coR5MFpR*Vn')
+        self.assertRaises(ValueError, seccure.passphrase_to_pubkey, u'test')
     def test_encrypt(self):
         msg = 'My private message'
-        pw = 'my private key'
+        pw = b'my private key'
         self.assertEqual(seccure.decrypt(seccure.encrypt(msg,
                         str(seccure.passphrase_to_pubkey(pw))),
-                            'my private key'), msg)
+                            b'my private key'), msg)
     def test_verify(self):
         msg = 'This message will be signed\n'
         sig = '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'
@@ -22,13 +23,13 @@ class TestMain(unittest.TestCase):
         self.assertTrue(seccure.verify(msg, sig, pubkey))
     def test_sign(self):
         msg = 'This message will be signed\n'
-        pw = 'my private key'
+        pw = b'my private key'
         self.assertEqual(seccure.sign(msg, pw),
                 '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq')
 
     def test_encrypt_file_named(self):
         msg = 'My private message'
-        pw = 'my private key'
+        pw = b'my private key'
         pubkey = '8W;>i^H0qi|J&$coR5MFpR*Vn'
 
         in_file = tempfile.NamedTemporaryFile()
@@ -47,7 +48,7 @@ class TestMain(unittest.TestCase):
 
     def test_encrypt_file(self):
         msg = 'My private message'
-        pw = 'my private key'
+        pw = b'my private key'
         pubkey = '8W;>i^H0qi|J&$coR5MFpR*Vn'
 
         encrypted_file = tempfile.NamedTemporaryFile()
