@@ -44,7 +44,7 @@ This is a very very secret message!
 In Python:
 
 ```python
->>> ciphertext = seccure.encrypt('This is a very secret message\n', '8W;>i^H0qi|J&$coR5MFpR*Vn')
+>>> ciphertext = seccure.encrypt(b'This is a very secret message\n', b'8W;>i^H0qi|J&$coR5MFpR*Vn')
 >>> ciphertext
 '\x00\x146\x17\xe9\xc1\x1a\x7fkX\xec\xa0n,h\xb4\xd0\x98\xeaO[\xf8\xfa\x85\xaa\xb37!\xf0j\x0e\xd4\xd0\x8b\xfe}\x8a\xd2+\xf2\xceu\x07\x90K2E\x12\x1d\xf1\xd8\x8f\xc6\x91\t<w\x99\x1b9\x98'
 ```
@@ -99,7 +99,7 @@ Signature: $HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq
 In Python:
 
 ```python
->>> seccure.sign('This message will be signed\n', b'my private key')
+>>> seccure.sign(b'This message will be signed\n', b'my private key')
 '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'
 ```
 
@@ -117,7 +117,7 @@ Signature successfully verified!
 In Python:
 
 ```python
->>> seccure.verify('This message will be signed\n', '$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq', '8W;>i^H0qi|J&$coR5MFpR*Vn')
+>>> seccure.verify(b'This message will be signed\n', b'$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq', b'8W;>i^H0qi|J&$coR5MFpR*Vn')
 True
 ```
 

@@ -363,12 +363,14 @@ class AffinePoint(object):
                             self.x, self.y, self.curve.name)
     def __str__(self):
         return self.to_string(SER_COMPACT)
-    def to_string(self, fmt=SER_BINARY):
+    def to_bytes(self, fmt=SER_BINARY):
         outlen = (self.curve.pk_len_compact if fmt == SER_COMPACT
                         else self.curve.pk_len_bin)
         if self._point_compress():
             return serialize_number(self.x + self.curve.m, fmt, outlen)
         return serialize_number(self.x, fmt, outlen)
+    def to_string(self, fmt=SER_BINARY):
+        return self.to_bytes(fmt).decode()
     def _point_compress(self):
         return self.y.getbit(0) == 1
     def _ECIES_KDF(self, R):
@@ -450,12 +452,14 @@ class PubKey(object):
             f.write(s)
         return out.getvalue()
 
+    def to_bytes(self, fmt=SER_BINARY):
+        return self.p.to_bytes(fmt)
     def to_string(self, fmt=SER_BINARY):
         return self.p.to_string(fmt)
     def __str__(self):
-        return str(self.p)
+        return self.to_string(SER_COMPACT)
     def __repr__(self):
-        return "<PubKey %s>" % str(self)
+        return "<PubKey %s>" % unicode(self)
 
 class PrivKey(object):
     """ A secret exponent """
@@ -517,7 +521,7 @@ class EncryptionContext(object):
         self.mac_bytes = mac_bytes
         key, R = p._ECIES_encryption()
         self.h = hmac.new(key[32:], digestmod=hashlib.sha256)
-        f.write(R.to_string(SER_BINARY))
+        f.write(R.to_bytes(SER_BINARY))
         ctr = Crypto.Util.Counter.new(128, initial_value=0)
         self.cipher = Crypto.Cipher.AES.new(key[:32],
                 Crypto.Cipher.AES.MODE_CTR, counter=ctr)
