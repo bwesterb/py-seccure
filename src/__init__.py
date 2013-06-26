@@ -16,9 +16,11 @@ import six
 if six.PY3:
     from io import BytesIO as BytesIO
     def byte2int(b): return b
+    def stringlike(x): return isinstance(x, (str, bytes))
 else:
     from cStringIO import StringIO as BytesIO
     def byte2int(b): return ord(b)
+    def stringlike(x): return isinstance(x, basestring)
 
 # PyCrypto
 import Crypto.Util
@@ -699,10 +701,10 @@ def encrypt_file(in_path_or_file, out_path_or_file, pk, pk_format=SER_COMPACT,
     close_in, close_out = False, False
     in_file, out_file = in_path_or_file, out_path_or_file
     try:
-        if isinstance(in_path_or_file, basestring):
+        if stringlike(in_path_or_file):
             in_file = open(in_path_or_file, 'rb')
             close_in = True
-        if isinstance(out_path_or_file, basestring):
+        if stringlike(out_path_or_file):
             out_file = open(out_path_or_file, 'wb')
             close_out = True
         _encrypt_file(in_file, out_file, pk, pk_format, mac_bytes, chunk_size)
@@ -716,10 +718,10 @@ def decrypt_file(in_path_or_file, out_path_or_file, passphrase,
     close_in, close_out = False, False
     in_file, out_file = in_path_or_file, out_path_or_file
     try:
-        if isinstance(in_path_or_file, basestring):
+        if stringlike(in_path_or_file):
             in_file = open(in_path_or_file, 'rb')
             close_in = True
-        if isinstance(out_path_or_file, basestring):
+        if stringlike(out_path_or_file):
             out_file = open(out_path_or_file, 'wb')
             close_out = True
         _decrypt_file(in_file, out_file, passphrase, curve, mac_bytes,
