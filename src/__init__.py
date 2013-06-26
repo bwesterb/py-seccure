@@ -455,6 +455,9 @@ class PubKey(object):
 
     def encrypt(self, s, mac_bytes=10):
         """ Encrypt `s' for this pubkey. """
+        if isinstance(s, six.text_type):
+            raise ValueError("Encode `s` to a bytestring yourself to"+
+                         " prevent problems with different default encodings")
         out = BytesIO()
         with self.encrypt_to(out, mac_bytes) as f:
             f.write(s)
@@ -481,6 +484,8 @@ class PrivKey(object):
         yield ctx
         ctx.read()
     def decrypt(self, s, mac_bytes=10):
+        if isinstance(s, six.text_type):
+            raise ValueError("s should be bytes")
         instream = BytesIO(s)
         with self.decrypt_from(instream, mac_bytes) as f:
             return f.read()
@@ -755,12 +760,18 @@ def _decrypt_file(in_file, out_file, passphrase, curve='secp160r1',
 def verify(s, sig, pk, sig_format=SER_COMPACT, pk_format=SER_COMPACT):
     """ Verifies that `sig' is a signature of pubkey `pk' for the
         message `s'. """
+    if isinstance(s, six.text_type):
+        raise ValueError("Encode `s` to a bytestring yourself to"+
+                     " prevent problems with different default encodings")
     curve = Curve.by_pk_len(len(pk))
     p = curve.pubkey_from_string(pk, pk_format)
     return p.verify(hashlib.sha512(s).digest(), sig, sig_format)
 
 def sign(s, passphrase, sig_format=SER_COMPACT, curve='secp160r1'):
     """ Signs `s' with passphrase `passphrase' """
+    if isinstance(s, six.text_type):
+        raise ValueError("Encode `s` to a bytestring yourself to"+
+                     " prevent problems with different default encodings")
     curve = Curve.by_name(curve)
     privkey = curve.passphrase_to_privkey(passphrase)
     return privkey.sign(hashlib.sha512(s).digest(), sig_format)
