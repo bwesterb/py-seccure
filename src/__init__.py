@@ -13,6 +13,12 @@ import collections
 from six.moves import cStringIO as StringIO
 import six
 
+# TODO replace with six.byte2int, when it is released
+if six.PY3:
+    def byte2int(b): return b
+else:
+    def byte2int(b): return ord(b)
+
 # PyCrypto
 import Crypto.Util
 import Crypto.Cipher.AES
@@ -31,8 +37,8 @@ class IntegrityError(ValueError):
 SER_COMPACT = 0
 SER_BINARY  = 1
 
-COMPACT_DIGITS = ('!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-                          '[]^_abcdefghijklmnopqrstuvwxyz{|}~')
+COMPACT_DIGITS = (b'!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                          b'[]^_abcdefghijklmnopqrstuvwxyz{|}~')
 R_COMPACT_DIGITS = {}  # TODO is a tuple/list faster?
 for i, c in enumerate(COMPACT_DIGITS):
     R_COMPACT_DIGITS[c] = i
@@ -51,10 +57,10 @@ def serialize_number(x, fmt=SER_BINARY, outlen=None):
     assert fmt == SER_COMPACT
     while x:
         x, r = divmod(x, len(COMPACT_DIGITS))
-        ret = COMPACT_DIGITS[r] + ret
+        ret = COMPACT_DIGITS[r:r+1] + ret
     if outlen is not None:
         assert len(ret) <= outlen
-        ret = ret.rjust(outlen, COMPACT_DIGITS[0])
+        ret = ret.rjust(outlen, COMPACT_DIGITS[0:1])
     return ret
 
 def deserialize_number(s, fmt=SER_BINARY):
@@ -63,7 +69,7 @@ def deserialize_number(s, fmt=SER_BINARY):
     if fmt == SER_BINARY:
         for c in s:
             ret *= 256
-            ret += ord(c)
+            ret += byte2int(c)
         return ret
     assert fmt == SER_COMPACT
     for c in s:
