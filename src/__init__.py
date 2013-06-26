@@ -49,7 +49,7 @@ def serialize_number(x, fmt=SER_BINARY, outlen=None):
     if fmt == SER_BINARY:
         while x:
             x, r = divmod(x, 256)
-            ret = six.int2byte(r) + ret
+            ret = six.int2byte(int(r)) + ret
         if outlen is not None:
             assert len(ret) <= outlen
             ret = ret.rjust(outlen, b'\0')

@@ -1,6 +1,7 @@
 import unittest
 import binascii
 
+import gmpy
 import seccure
 
 class TestHelpers(unittest.TestCase):
@@ -14,6 +15,8 @@ class TestHelpers(unittest.TestCase):
                     (256,           b'0100')):
             self.assertEqual(binascii.hexlify(seccure.serialize_number(number)),
                                         string)
+            self.assertEqual(binascii.hexlify(seccure.serialize_number(
+                        gmpy.mpz(number))), string)
             self.assertEqual(seccure.deserialize_number(
                             binascii.unhexlify(string)), number)
         for number, string in (
@@ -23,8 +26,10 @@ class TestHelpers(unittest.TestCase):
                     (13371337,      b'00cc07c9'),
                     (256,           b'00000100')):
             self.assertEqual(binascii.hexlify(
-                    seccure.serialize_number(number, outlen=4)),
-                                        string)
+                    seccure.serialize_number(number, outlen=4)), string)
+            self.assertEqual(binascii.hexlify(
+                    seccure.serialize_number(gmpy.mpz(number),
+                                                outlen=4)), string)
             self.assertEqual(seccure.deserialize_number(
                             binascii.unhexlify(string)), number)
     def test_deserialize_number_compact_unicode(self):
@@ -51,6 +56,8 @@ class TestHelpers(unittest.TestCase):
                     (89,            b'~'),
                     (256,           b'$q')):
             self.assertEqual(seccure.serialize_number(number,
+                        fmt=seccure.SER_COMPACT), string)
+            self.assertEqual(seccure.serialize_number(gmpy.mpz(number),
                         fmt=seccure.SER_COMPACT), string)
             self.assertEqual(seccure.deserialize_number(
                             string, fmt=seccure.SER_COMPACT), number)
