@@ -590,6 +590,17 @@ class Curve(object):
     """ Represents a Elliptic Curve """
 
     @staticmethod
+    def by_name_substring(substring):
+        substring = substring.lower()
+        candidates = []
+        for raw_curve in six.itervalues(RAW_CURVES):
+            if substring in raw_curve[0]:
+                candidates.append(raw_curve)
+        if len(candidates) != 1:
+            raise KeyError
+        return Curve(candidates[0])
+
+    @staticmethod
     def by_name(name):
         for raw_curve in six.itervalues(RAW_CURVES):
             if raw_curve[0] == name:
