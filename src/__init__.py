@@ -10,13 +10,14 @@ import contextlib
 import collections
 
 # six
-from six.moves import cStringIO as StringIO
 import six
 
 # TODO replace with six.byte2int, when it is released
 if six.PY3:
+    from io import BytesIO as BytesIO
     def byte2int(b): return b
 else:
+    from cStringIO import StringIO as BytesIO
     def byte2int(b): return ord(b)
 
 # PyCrypto
@@ -452,7 +453,7 @@ class PubKey(object):
 
     def encrypt(self, s, mac_bytes=10):
         """ Encrypt `s' for this pubkey. """
-        out = StringIO()
+        out = BytesIO()
         with self.encrypt_to(out, mac_bytes) as f:
             f.write(s)
         return out.getvalue()
@@ -478,7 +479,7 @@ class PrivKey(object):
         yield ctx
         ctx.read()
     def decrypt(self, s, mac_bytes=10):
-        instream = StringIO(s)
+        instream = BytesIO(s)
         with self.decrypt_from(instream, mac_bytes) as f:
             return f.read()
     def sign(self, h, sig_format=SER_BINARY):
@@ -670,7 +671,7 @@ class Curve(object):
         yield ctx
         ctx.read()
     def decrypt(self, s, privkey, mac_bytes=10):
-        instream = StringIO(s)
+        instream = BytesIO(s)
         with self.decrypt_from(instream, privkey, mac_bytes) as f:
             return f.read()
 
