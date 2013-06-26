@@ -8,7 +8,11 @@ import logging
 import binascii
 import contextlib
 import collections
-import cStringIO as StringIO
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 # PyCrypto
 import Crypto.Util
@@ -436,7 +440,7 @@ class PubKey(object):
 
     def encrypt(self, s, mac_bytes=10):
         """ Encrypt `s' for this pubkey. """
-        out = StringIO.StringIO()
+        out = StringIO()
         with self.encrypt_to(out, mac_bytes) as f:
             f.write(s)
         return out.getvalue()
@@ -460,7 +464,7 @@ class PrivKey(object):
         yield ctx
         ctx.read()
     def decrypt(self, s, mac_bytes=10):
-        instream = StringIO.StringIO(s)
+        instream = StringIO(s)
         with self.decrypt_from(instream, mac_bytes) as f:
             return f.read()
     def sign(self, h, sig_format=SER_BINARY):
@@ -649,7 +653,7 @@ class Curve(object):
         yield ctx
         ctx.read()
     def decrypt(self, s, privkey, mac_bytes=10):
-        instream = StringIO.StringIO(s)
+        instream = StringIO(s)
         with self.decrypt_from(instream, privkey, mac_bytes) as f:
             return f.read()
 
