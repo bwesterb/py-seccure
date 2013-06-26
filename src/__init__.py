@@ -369,6 +369,12 @@ class AffinePoint(object):
     def __repr__(self):
         return "<AffinePoint (%s, %s) of %s>" % (
                             self.x, self.y, self.curve.name)
+    def __eq__(self, other):
+        if not isinstance(other, AffinePoint):
+            return False
+        return self.x == other.x and self.y == other.y
+    def __ne__(self, other):
+        return not (self == other)
     def __str__(self):
         return self.to_string(SER_COMPACT)
     def to_bytes(self, fmt=SER_BINARY):
