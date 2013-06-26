@@ -1,6 +1,7 @@
 import unittest
 import binascii
 
+import six
 import gmpy
 import seccure
 
@@ -34,16 +35,16 @@ class TestHelpers(unittest.TestCase):
                             binascii.unhexlify(string)), number)
     def test_deserialize_number_compact_unicode(self):
         for number, string in (
-                    (1231234,       u'#c!E'),
-                    (0,             u''),
-                    (255,           u'$p'),
-                    (1231231231232, u'$?Pvfdc'),
-                    (13371337,      u'5AkH'),
-                    (90,            u'#!'),
-                    (89,            u'~'),
-                    (256,           u'$q')):
+                    (1231234,       '#c!E'),
+                    (0,             ''),
+                    (255,           '$p'),
+                    (1231231231232, '$?Pvfdc'),
+                    (13371337,      '5AkH'),
+                    (90,            '#!'),
+                    (89,            '~'),
+                    (256,           '$q')):
             self.assertEqual(seccure.deserialize_number(
-                            string, fmt=seccure.SER_COMPACT), number)
+                            six.u(string), fmt=seccure.SER_COMPACT), number)
 
     def test_serialize_number_compact(self):
         for number, string in (

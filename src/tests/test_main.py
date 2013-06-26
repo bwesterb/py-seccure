@@ -2,6 +2,7 @@ import unittest
 import tempfile
 
 import seccure
+import six
 
 class TestMain(unittest.TestCase):
     def test_passphrase_to_pubkey(self):
@@ -9,7 +10,8 @@ class TestMain(unittest.TestCase):
                                 '*jMVCU^[QC&q*v_8C1ZAFBAgD')
         self.assertEqual(str(seccure.passphrase_to_pubkey(b'my private key')),
                                 '8W;>i^H0qi|J&$coR5MFpR*Vn')
-        self.assertRaises(ValueError, seccure.passphrase_to_pubkey, u'test')
+        self.assertRaises(ValueError, seccure.passphrase_to_pubkey,
+                            six.u('test'))
     def test_encrypt(self):
         msg = b'My private message'
         pw = b'my private key'
