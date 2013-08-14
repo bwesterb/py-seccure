@@ -131,7 +131,7 @@ def mod_root(a, p):
         while h != 1:
             h = (h * h) % p
             m += 1
-        h = 0
+        h = gmpy.mpz(0)
         h.setbit(r - m - 1)
         t = pow(y, h, p)
         y = (t * t) % p
