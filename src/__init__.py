@@ -478,7 +478,7 @@ class PubKey(object):
     def __str__(self):
         return self.to_string(SER_COMPACT)
     def __repr__(self):
-        return "<PubKey %s>" % unicode(self)
+        return "<PubKey %s>" % self
 
 class PrivKey(object):
     """ A secret exponent """
