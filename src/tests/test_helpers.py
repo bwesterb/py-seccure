@@ -1,6 +1,8 @@
 import unittest
 import binascii
 
+from six.moves import xrange
+
 import six
 import gmpy
 import seccure
