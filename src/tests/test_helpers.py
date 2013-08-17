@@ -77,6 +77,26 @@ class TestHelpers(unittest.TestCase):
             self.assertEqual(seccure.deserialize_number(string,
                             fmt=seccure.SER_COMPACT), number)
 
+    def test_mod_issquare(self):
+        for p in (7, 37, 1489):
+            p = gmpy.mpz(p)
+            had = set()
+            for n in xrange(p-1):
+                sq = (n * n) % p
+                if sq in had:
+                    continue
+                had.add(sq)
+                self.assertTrue(seccure.mod_issquare(sq, p))
+            for n in xrange(p-1):
+                if n not in had:
+                    self.assertFalse(seccure.mod_issquare(n, p))
+
+    def test_mod_root(self):
+        for p in (7, 37, 1489):
+            p = gmpy.mpz(p)
+            for n in xrange(p-1):
+                if seccure.mod_issquare(n, p):
+                    self.assertEqual((seccure.mod_root(n, p) ** 2) % p, n)
 
 if __name__ == '__main__':
     unittest.main()
