@@ -299,6 +299,7 @@ RAW_CURVES = (
             b"69",
         1, 79),
     )
+curves = [r[0] for r in RAW_CURVES]
 
 # Arithmetic on elliptic curves
 # #########################################################
