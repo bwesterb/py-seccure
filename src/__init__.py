@@ -144,51 +144,53 @@ def mod_root(a, p):
 # #########################################################
 
 raw_curve_parameters = collections.namedtuple('raw_curve_parameters',
-            ('name', 'a', 'b', 'm', 'base_x', 'base_y', 'order', 'cofactor'))
-RAW_CURVES = {
-    18 : ("secp112r1",
+            ('name', 'a', 'b', 'm', 'base_x', 'base_y', 'order', 'cofactor',
+                        'pk_len_compact'))
+RAW_CURVES = (
+       ("secp112r1",
         b"db7c2abf62e35e668076bead2088",
         b"659ef8ba043916eede8911702b22",
         b"db7c2abf62e35e668076bead208b",
         b"09487239995a5ee76b55f9c2f098",
         b"a89ce5af8724c0a23e0e0ff77500",
-        b"db7c2abf62e35e7628dfac6561c5", 1),
-    20: ("secp128r1",
+        b"db7c2abf62e35e7628dfac6561c5", 1, 18),
+       ("secp128r1",
         b"fffffffdfffffffffffffffffffffffc",
         b"e87579c11079f43dd824993c2cee5ed3",
         b"fffffffdffffffffffffffffffffffff",
         b"161ff7528b899b2d0c28607ca52c5b86",
         b"cf5ac8395bafeb13c02da292dded7a83",
-        b"fffffffe0000000075a30d1b9038a115", 1),
-    25: ("secp160r1",
+        b"fffffffe0000000075a30d1b9038a115", 1, 20),
+       ("secp160r1",
         b"ffffffffffffffffffffffffffffffff7ffffffc",
         b"1c97befc54bd7a8b65acf89f81d4d4adc565fa45",
         b"ffffffffffffffffffffffffffffffff7fffffff",
         b"4a96b5688ef573284664698968c38bb913cbfc82",
         b"23a628553168947d59dcc912042351377ac5fb32",
-        b"0100000000000000000001f4c8f927aed3ca752257", 1),
-    30: ("secp192r1/nistp192",
+        b"0100000000000000000001f4c8f927aed3ca752257", 1, 25),
+       ("secp192r1/nistp192",
         b"fffffffffffffffffffffffffffffffefffffffffffffffc",
         b"64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1",
         b"fffffffffffffffffffffffffffffffeffffffffffffffff",
         b"188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012",
         b"07192b95ffc8da78631011ed6b24cdd573f977a11e794811",
-        b"ffffffffffffffffffffffff99def836146bc9b1b4d22831", 1),
-    35: ("secp224r1/nistp224",
+        b"ffffffffffffffffffffffff99def836146bc9b1b4d22831", 1, 30),
+       ("secp224r1/nistp224",
         b"fffffffffffffffffffffffffffffffefffffffffffffffffffffffe",
         b"b4050a850c04b3abf54132565044b0b7d7bfd8ba270b39432355ffb4",
         b"ffffffffffffffffffffffffffffffff000000000000000000000001",
         b"b70e0cbd6bb4bf7f321390b94a03c1d356c21122343280d6115c1d21",
         b"bd376388b5f723fb4c22dfe6cd4375a05a07476444d5819985007e34",
-        b"ffffffffffffffffffffffffffff16a2e0b8f03e13dd29455c5c2a3d", 1),
-    40: ("secp256r1/nistp256",
+        b"ffffffffffffffffffffffffffff16a2e0b8f03e13dd29455c5c2a3d", 1, 35),
+       ("secp256r1/nistp256",
         b"ffffffff00000001000000000000000000000000fffffffffffffffffffffffc",
         b"5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b",
         b"ffffffff00000001000000000000000000000000ffffffffffffffffffffffff",
         b"6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296",
         b"4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5",
-        b"ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551", 1),
-    60: ("secp384r1/nistp384",
+        b"ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551",
+            1, 40),
+       ("secp384r1/nistp384",
         b"fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe"+
             b"ffffffff0000000000000000fffffffc",
         b"b3312fa7e23ee7e4988e056be3f82d19181d9c6efe8141120314088f5013875a"+
@@ -200,8 +202,8 @@ RAW_CURVES = {
         b"3617de4a96262c6f5d9e98bf9292dc29f8f41dbd289a147ce9da3113b5f0b8c0"+
             b"0a60b1ce1d7e819d7a431d7c90ea0e5f",
         b"ffffffffffffffffffffffffffffffffffffffffffffffffc7634d81f4372ddf"+
-            b"581a0db248b0a77aecec196accc52973", 1),
-    81: ("secp521r1/nistp521",
+            b"581a0db248b0a77aecec196accc52973", 1, 60),
+       ("secp521r1/nistp521",
         b"01ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"+
             b"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"+
             b"fffffffc",
@@ -219,8 +221,8 @@ RAW_CURVES = {
             b"9fd16650",
         b"01ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"+
             b"fffa51868783bf2f966b7fcc0148f709a5d03bb5c9b8899c47aebb6fb71e"+
-            b"91386409", 1)
-    }
+            b"91386409", 1, 81)
+    )
 
 # Arithmetic on elliptic curves
 # #########################################################
@@ -595,7 +597,7 @@ class Curve(object):
     def by_name_substring(substring):
         substring = substring.lower()
         candidates = []
-        for raw_curve in six.itervalues(RAW_CURVES):
+        for raw_curve in RAW_CURVES:
             if substring in raw_curve[0]:
                 candidates.append(raw_curve)
         if len(candidates) != 1:
@@ -604,13 +606,16 @@ class Curve(object):
 
     @staticmethod
     def by_name(name):
-        for raw_curve in six.itervalues(RAW_CURVES):
+        for raw_curve in RAW_CURVES:
             if raw_curve[0] == name:
                 return Curve(raw_curve)
         raise KeyError
     @staticmethod
     def by_pk_len(pk_len):
-        return Curve(RAW_CURVES[pk_len])
+        for raw_curve in RAW_CURVES:
+            if raw_curve[8] == pk_len:
+                return Curve(raw_curve)
+        raise KeyError
 
     def __init__(self, raw_curve_params):
         """ Initialize a new curve from raw curve parameters.
@@ -634,6 +639,7 @@ class Curve(object):
                                 (2 * self.m) - 1, SER_BINARY)
         self.pk_len_compact = get_serialized_number_len(
                                 (2 * self.m) - 1, SER_COMPACT)
+        assert self.pk_len_compact == r.pk_len_compact
         self.sig_len_bin = get_serialized_number_len(
                                 (self.order * self.order) - 1, SER_BINARY)
         self.sig_len_compact = get_serialized_number_len(
