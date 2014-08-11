@@ -12,12 +12,18 @@ class TestMain(unittest.TestCase):
                                 '8W;>i^H0qi|J&$coR5MFpR*Vn')
         self.assertRaises(ValueError, seccure.passphrase_to_pubkey,
                             six.u('test'))
+        for curvename in seccure.curves:
+            seccure.passphrase_to_pubkey(b'test', curve=curvename)
     def test_encrypt(self):
         msg = b'My private message'
         pw = b'my private key'
         self.assertEqual(seccure.decrypt(seccure.encrypt(msg,
                         str(seccure.passphrase_to_pubkey(pw))),
                             b'my private key'), msg)
+        for c in seccure.curves:
+            self.assertEqual(seccure.decrypt(seccure.encrypt(msg,
+                            str(seccure.passphrase_to_pubkey(pw, curve=c)),
+                            curve=c), b'my private key', curve=c), msg)
     def test_verify(self):
         msg = b'This message will be signed\n'
         sig = b'$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq'
@@ -28,6 +34,14 @@ class TestMain(unittest.TestCase):
         pw = b'my private key'
         self.assertEqual(seccure.sign(msg, pw),
                 b'$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq')
+    def test_sign_and_verify(self):
+        msg = b'This message will be signed\n'
+        pw = b'my private key'
+        for c in seccure.curves:
+            pubkey = str(seccure.passphrase_to_pubkey(pw, curve=c))
+            self.assertTrue(seccure.verify(msg, seccure.sign(msg, pw, curve=c),
+                                    pubkey, curve=c))
+
 
     def test_encrypt_file_named(self):
         msg = b'My private message'
