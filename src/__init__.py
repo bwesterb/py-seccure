@@ -790,9 +790,10 @@ def _passphrase_to_hash(passphrase):
     """ Converts a passphrase to a hash. """
     return hashlib.sha256(passphrase).digest()
 
-def encrypt(s, pk, pk_format=SER_COMPACT, mac_bytes=10):
+def encrypt(s, pk, pk_format=SER_COMPACT, mac_bytes=10, curve=None):
     """ Encrypts `s' for public key `pk' """
-    curve = Curve.by_pk_len(len(pk))
+    curve = (Curve.by_pk_len(len(pk)) if curve is None
+                else Curve.by_name(curve))
     p = curve.pubkey_from_string(pk, pk_format)
     return p.encrypt(s, mac_bytes)
 
@@ -803,7 +804,7 @@ def decrypt(s, passphrase, curve='secp160r1', mac_bytes=10):
     return privkey.decrypt(s, mac_bytes)
 
 def encrypt_file(in_path_or_file, out_path_or_file, pk, pk_format=SER_COMPACT,
-                 mac_bytes=10, chunk_size=4096):
+                 mac_bytes=10, chunk_size=4096, curve=None):
     """ Encrypts `in_file' to `out_file' for pubkey `pk' """
     close_in, close_out = False, False
     in_file, out_file = in_path_or_file, out_path_or_file
@@ -814,7 +815,8 @@ def encrypt_file(in_path_or_file, out_path_or_file, pk, pk_format=SER_COMPACT,
         if stringlike(out_path_or_file):
             out_file = open(out_path_or_file, 'wb')
             close_out = True
-        _encrypt_file(in_file, out_file, pk, pk_format, mac_bytes, chunk_size)
+        _encrypt_file(in_file, out_file, pk, pk_format, mac_bytes, chunk_size,
+                                curve)
     finally:
         if close_out: out_file.close()
         if close_in: in_file.close()
@@ -838,8 +840,9 @@ def decrypt_file(in_path_or_file, out_path_or_file, passphrase,
         if close_in: in_file.close()
 
 def _encrypt_file(in_file, out_file, pk, pk_format=SER_COMPACT,
-                 mac_bytes=10, chunk_size=4096):
-    curve = Curve.by_pk_len(len(pk))
+                 mac_bytes=10, chunk_size=4096, curve=None):
+    curve = (Curve.by_pk_len(len(pk)) if curve is None
+                else Curve.by_name(curve))
     p = curve.pubkey_from_string(pk, pk_format)
     with p.encrypt_to(out_file, mac_bytes) as encrypted_out:
         while True:
@@ -859,13 +862,15 @@ def _decrypt_file(in_file, out_file, passphrase, curve='secp160r1',
                 break
             out_file.write(buff)
 
-def verify(s, sig, pk, sig_format=SER_COMPACT, pk_format=SER_COMPACT):
+def verify(s, sig, pk, sig_format=SER_COMPACT, pk_format=SER_COMPACT,
+                        curve=None):
     """ Verifies that `sig' is a signature of pubkey `pk' for the
         message `s'. """
     if isinstance(s, six.text_type):
         raise ValueError("Encode `s` to a bytestring yourself to"+
                      " prevent problems with different default encodings")
-    curve = Curve.by_pk_len(len(pk))
+    curve = (Curve.by_pk_len(len(pk)) if curve is None
+                    else Curve.by_name(curve))
     p = curve.pubkey_from_string(pk, pk_format)
     return p.verify(hashlib.sha512(s).digest(), sig, sig_format)
 
