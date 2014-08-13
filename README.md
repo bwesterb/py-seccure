@@ -3,7 +3,8 @@ py-seccure
 
 Simple Elliptic Curve Cryptography for Python compatible with the
 excellent [SECCURE](http://point-at-infinity.org/seccure/) command
-line utility.
+line utility (version 0.5).  It's licensed under LGPLv3.
+See LICENSE.
 
 Usage
 -----
