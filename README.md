@@ -54,7 +54,6 @@ There is a shorthand to encrypt a file:
 
 ```python
 >>> seccure.encrypt_file('/path/to/file',  '/path/to/file.enc', '8W;>i^H0qi|J&$coR5MFpR*Vn')
-'/path/to/file.enc'
 ```
 
 ### Decrypting
@@ -80,8 +79,6 @@ And to decrypt a file:
 
 ```python
 >>> seccure.decrypt_file('/path/to/file.enc',  '/path/to/file', b'my private key')
-'/path/to/file'
-''
 ```
 
 ### Creating a signature
