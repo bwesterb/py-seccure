@@ -6,6 +6,10 @@ excellent [SECCURE](http://point-at-infinity.org/seccure/) command
 line utility (version 0.5).  It's licensed under LGPLv3.
 See LICENSE.
 
+**Do not use `py-seccure` when its operation can be timed by an
+attacker.** See
+[timing attack on Wikipedia](http://en.wikipedia.org/wiki/Timing_attack).
+
 Usage
 -----
 
