@@ -19,11 +19,12 @@ setup(
     url='http://github.com/bwesterb/py-seccure',
     packages=['seccure', 'seccure.tests'],
     package_dir={'seccure': 'src'},
-    license='GPL 3.0',
+    license='LGPL 3.0',
     install_requires=install_requires,
     classifiers = [
             'Development Status :: 3 - Alpha',
-            'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+            'License :: OSI Approved ::' +
+                ' GNU Lesser General Public License v3 (LGPLv3)',
             'Operating System :: POSIX',
             'Topic :: Security',
             'Programming Language :: Python :: 2.6',
