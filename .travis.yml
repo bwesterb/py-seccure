@@ -4,6 +4,8 @@ python:
  - "2.7"
  - "3.2"
  - "3.3"
+ - "3.4"
+ - "3.5"
 install:
  - "sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm"
  - "sudo apt-get install -qq libgmp-dev"
