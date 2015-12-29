@@ -16,9 +16,9 @@ base_path = os.path.dirname(os.path.abspath(__file__))
 
 with open(os.path.join(base_path, 'src', '_version.py')) as f: exec(f.read())
 
-with open(os.path.join(base_path, 'README.rst')) as f, \
-     open(os.path.join(base_path, 'CHANGES.rst')) as g:
-    long_description = '{0}\n{1}'.format(f.read(), g.read())
+with open(os.path.join(base_path, 'README.rst')) as f:
+    with open(os.path.join(base_path, 'CHANGES.rst')) as g:
+        long_description = '{0}\n{1}'.format(f.read(), g.read())
 
 setup(
     name='seccure',
