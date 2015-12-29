@@ -169,7 +169,7 @@ To help out, you could:
 4. Write more unit tests.
 
 .. image:: https://travis-ci.org/bwesterb/py-seccure.png
-   :target: https://travis-ci.org/py-seccure/pol
+   :target: https://travis-ci.org/py-seccure/py-seccure
 
 .. _SECCURE: http://point-at-infinity.org/seccure/
 .. _timing attack: http://en.wikipedia.org/wiki/Timing_attack
