@@ -9,6 +9,8 @@ import binascii
 import contextlib
 import collections
 
+from ._version import __version__
+
 # six
 import six
 
