@@ -1,7 +1,7 @@
 py-seccure Changelog
 ====================
 
-0.3.1.3 (unreleased)
+0.3.1.3 (2016-01-03)
 --------------------
 
 - Small fix for Python 2.6
