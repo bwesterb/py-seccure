@@ -888,3 +888,14 @@ def sign(s, passphrase, sig_format=SER_COMPACT, curve='secp160r1'):
 def passphrase_to_pubkey(passphrase, curve='secp160r1'):
     curve = Curve.by_name(curve)
     return curve.passphrase_to_pubkey(passphrase)
+
+def generate_keypair(curve='secp160r1', randfunc=None):
+    """ Convenience function to generate a random
+        new keypair (passphrase, pubkey). """
+    if randfunc is None:
+        randfunc = Crypto.Random.new().read
+    curve = Curve.by_name(curve)
+    raw_privkey = randfunc(curve.order_len_bin)
+    privkey = serialize_number(deserialize_number(raw_privkey), SER_COMPACT)
+    pubkey = str(passphrase_to_pubkey(privkey))
+    return (privkey, pubkey)

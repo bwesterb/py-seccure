@@ -4,7 +4,7 @@ py-seccure Changelog
 0.3.1.4 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- Add ``generate_keypair``
 
 
 0.3.1.3 (2016-01-03)

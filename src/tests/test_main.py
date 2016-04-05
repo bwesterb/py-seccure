@@ -14,6 +14,10 @@ class TestMain(unittest.TestCase):
                             six.u('test'))
         for curvename in seccure.curves:
             seccure.passphrase_to_pubkey(b'test', curve=curvename)
+    def test_generate_keypair(self):
+        for curvename in seccure.curves:
+            privkey, pubkey = seccure.generate_keypair(curve=curvename)
+            self.assertEqual(str(seccure.passphrase_to_pubkey(privkey)), pubkey)
     def test_encrypt(self):
         msg = b'My private message'
         pw = b'my private key'
