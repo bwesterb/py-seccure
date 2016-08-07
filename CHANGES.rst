@@ -1,8 +1,8 @@
 py-seccure Changelog
 ====================
 
-0.3.1.4 (unreleased)
---------------------
+0.3.2 (2016-08-07)
+------------------
 
 - Add ``generate_keypair``
 - Fix doubling of affine points. #10 (Thanks-to: Joep Peeters)
