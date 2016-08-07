@@ -410,6 +410,26 @@ class AffinePoint(object):
         if not self:
             return JacobianPoint(x=0, y=0, z=0, curve=self.curve)
         return JacobianPoint(x=self.x, y=self.y, z=1, curve=self.curve)
+    def double(self):
+        if not self.y:
+            return AffinePoint(x=0, y=0, curve=self.curve)
+        m = self.curve.m
+        a = self.curve.a
+        t2 = (self.x * self.x) % m
+        t1 = (t2 + t2) % m
+        t1 = (t1 + t2) % m
+        t1 = (t1 + a) % m
+        t2 = (self.y + self.y) % m
+        t2 = gmpy.invert(t2, m)
+        t1 = (t1 * t2) % m
+        t2 = (t1 * t1) % m
+        t2 = (t2 - self.x) % m
+        t2 = (t2 - self.x) % m
+        x = (self.x - t2) % m
+        t1 = (t1 * x) % m
+        y = (t1 - self.y) % m
+        x = t2
+        return AffinePoint(x=x, y=y, curve=self.curve)
     def __mul__(self, exp):
         n = exp.numdigits(2)
         r = JacobianPoint(x=0, y=0, z=0, curve=self.curve)
