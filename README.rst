@@ -137,7 +137,7 @@ On Debian Wheezy
 
 ::
 
-    $ apt-get install libgmp3-dev build-essential python-dev python-pip
+    $ apt-get install libgmp3-dev build-essential python-dev python-pip libmpfr-dev libmpc-dev
     $ pip install seccure
 
 On Ubuntu
@@ -145,7 +145,7 @@ On Ubuntu
 
 ::
 
-    $ apt-get install libgmp-dev build-essential python-dev python-pip
+    $ apt-get install libgmp-dev build-essential python-dev python-pip libmpfr-dev libmpc-dev
     $ pip install seccure
 
 On Mac with MacPorts
@@ -153,7 +153,7 @@ On Mac with MacPorts
 
 ::
 
-    $ port install gmp
+    $ port install py27-gmpy2
     $ pip install seccure
 
 Please contribute!

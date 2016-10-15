@@ -8,7 +8,7 @@ python:
  - "3.7"
 install:
  - "sudo apt-get update -qq"
- - "sudo apt-get install -y libgmp-dev"
+ - "sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev"
  - "sudo pip install flake8"
  - "python setup.py install"
 script:

@@ -7,7 +7,7 @@ from setuptools import setup
 
 install_requires = [
     'pycrypto >=2.6',
-    'gmpy >=1.15, <2',
+    'gmpy2 >=2',
     'six >=1.2',
 ]
 

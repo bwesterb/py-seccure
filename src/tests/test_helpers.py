@@ -4,7 +4,7 @@ import binascii
 from six.moves import xrange
 
 import six
-import gmpy
+import gmpy2
 import seccure
 
 
@@ -23,7 +23,7 @@ class TestHelpers(unittest.TestCase):
                     seccure.serialize_number(number)),
                 string)
             self.assertEqual(binascii.hexlify(seccure.serialize_number(
-                gmpy.mpz(number))), string)
+                gmpy2.mpz(number))), string)
             self.assertEqual(seccure.deserialize_number(
                 binascii.unhexlify(string)), number)
         for number, string in (
@@ -35,7 +35,7 @@ class TestHelpers(unittest.TestCase):
             self.assertEqual(binascii.hexlify(
                 seccure.serialize_number(number, outlen=4)), string)
             self.assertEqual(binascii.hexlify(
-                seccure.serialize_number(gmpy.mpz(number),
+                seccure.serialize_number(gmpy2.mpz(number),
                                          outlen=4)), string)
             self.assertEqual(seccure.deserialize_number(
                 binascii.unhexlify(string)), number)
@@ -70,7 +70,7 @@ class TestHelpers(unittest.TestCase):
                 string)
             self.assertEqual(
                 seccure.serialize_number(
-                    gmpy.mpz(number),
+                    gmpy2.mpz(number),
                     fmt=seccure.SER_COMPACT),
                 string)
             self.assertEqual(seccure.deserialize_number(
@@ -95,7 +95,7 @@ class TestHelpers(unittest.TestCase):
 
     def test_mod_issquare(self):
         for p in (7, 37, 1489):
-            p = gmpy.mpz(p)
+            p = gmpy2.mpz(p)
             had = set()
             for n in xrange(p - 1):
                 sq = (n * n) % p
@@ -109,7 +109,7 @@ class TestHelpers(unittest.TestCase):
 
     def test_mod_root(self):
         for p in (7, 37, 1489):
-            p = gmpy.mpz(p)
+            p = gmpy2.mpz(p)
             for n in xrange(p - 1):
                 if seccure.mod_issquare(n, p):
                     self.assertEqual((seccure.mod_root(n, p) ** 2) % p, n)
