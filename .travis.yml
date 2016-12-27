@@ -6,6 +6,7 @@ python:
  - "3.3"
  - "3.4"
  - "3.5"
+ - "3.6"
 install:
  - "sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm"
  - "sudo apt-get update -qq"
