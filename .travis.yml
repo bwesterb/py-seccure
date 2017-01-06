@@ -11,6 +11,8 @@ install:
  - "sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm"
  - "sudo apt-get update -qq"
  - "sudo apt-get install -y libgmp-dev"
+ - "sudo pip install flake8"
  - "python setup.py install"
 script:
  - "python setup.py test"
+ - "flake8"
