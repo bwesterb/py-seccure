@@ -50,6 +50,12 @@ class TestMain(unittest.TestCase):
         self.assertEqual(seccure.sign(msg, pw),
                          b'$HPI?t(I*1vAYsl$|%21WXND=6Br*[>k(OR9B!GOwHqL0s+3Uq')
 
+    def test_sign_length(self):
+        msg = b'ttrMWDqBxjC8UAl8X4TRDSSpd1IyYMh4\n'
+        pw = b'my private key'
+        self.assertEqual(seccure.sign(msg, pw),
+                         b'!!!5{LV[=|t~46wS2y<Ub9Ol;uO/fPGU*JYKid+|(JBMspwk7S')
+
     def test_sign_and_verify(self):
         msg = b'This message will be signed\n'
         pw = b'my private key'

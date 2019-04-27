@@ -655,8 +655,10 @@ class PrivKey(object):
 
     def sign(self, h, sig_format=SER_BINARY):
         """ Signs the message with SHA-512 hash `h' with this private key. """
+        outlen = (self.curve.sig_len_compact if sig_format == SER_COMPACT
+                  else self.curve.sig_len_bin)
         sig = self._ECDSA_sign(h)
-        return serialize_number(sig, sig_format)
+        return serialize_number(sig, sig_format, outlen)
 
     def __repr__(self):
         return "<PrivKey %s>" % self.e
