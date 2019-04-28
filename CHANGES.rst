@@ -10,6 +10,8 @@ py-seccure Changelog
   by seccure. This has been fixed.  Old unpadded signatures are still
   accepted by py-seccure to keep backwards compatibility.
   See #16 (Thanks-to: Tanner Collin)
+- Add support for Python 3.7
+- Drop support for Python 2.6 & Python 3.3
 
 
 0.3.2 (2016-08-07)
