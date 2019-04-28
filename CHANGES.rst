@@ -1,7 +1,7 @@
 py-seccure Changelog
 ====================
 
-0.3.3 (unreleased)
+0.3.3 (2019-04-28)
 ------------------
 
 - Bow to flake8
