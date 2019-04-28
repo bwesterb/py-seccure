@@ -1,6 +1,12 @@
 py-seccure Changelog
 ====================
 
+0.3.4 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 0.3.3 (2019-04-28)
 ------------------
 
