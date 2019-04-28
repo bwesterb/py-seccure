@@ -96,6 +96,20 @@ class TestMain(unittest.TestCase):
         with open(decrypted_file.name, 'rb') as fi:
             self.assertEqual(msg, fi.read())
 
+    def test_backwards_compatibility_issue_16(self):
+        msg = b'ttrMWDqBxjC8UAl8X4TRDSSpd1IyYMh4\n'
+        sig = b'5{LV[=|t~46wS2y<Ub9Ol;uO/fPGU*JYKid+|(JBMspwk7S'
+        pw = b'my private key'
+        pubkey = str(seccure.passphrase_to_pubkey(pw))
+        self.assertTrue(seccure.verify(msg, sig, pubkey))
+
+    def test_forwards_compatibility_issue_16(self):
+        msg = b'ttrMWDqBxjC8UAl8X4TRDSSpd1IyYMh4\n'
+        sig = b'!!!5{LV[=|t~46wS2y<Ub9Ol;uO/fPGU*JYKid+|(JBMspwk7S'
+        pw = b'my private key'
+        pubkey = str(seccure.passphrase_to_pubkey(pw))
+        self.assertTrue(seccure.verify(msg, sig, pubkey))
+
 
 if __name__ == '__main__':
     unittest.main()
