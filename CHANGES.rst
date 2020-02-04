@@ -4,7 +4,7 @@ py-seccure Changelog
 0.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix `generate_keypair`. #19 (Thanks-to: @Dschorim)
 
 
 0.4.0 (2019-07-28)

@@ -1017,5 +1017,5 @@ def generate_keypair(curve='secp160r1', randfunc=None):
     curve = Curve.by_name(curve)
     raw_privkey = randfunc(curve.order_len_bin)
     privkey = serialize_number(deserialize_number(raw_privkey), SER_COMPACT)
-    pubkey = str(passphrase_to_pubkey(privkey))
+    pubkey = str(curve.passphrase_to_pubkey(privkey))
     return (privkey, pubkey)
