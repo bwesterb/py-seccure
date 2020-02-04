@@ -1,7 +1,7 @@
 py-seccure Changelog
 ====================
 
-0.5.0 (unreleased)
+0.5.0 (2020-02-04)
 ------------------
 
 - Switch from PyCrypto to pycryptodome
