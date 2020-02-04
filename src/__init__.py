@@ -10,8 +10,8 @@ import collections
 
 from ._version import __version__  # noqa: F401
 
-# PyCrypto
-import Crypto.Util
+# pycryptodome
+import Crypto.Util.Counter
 import Crypto.Cipher.AES
 import Crypto.Random.random
 

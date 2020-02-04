@@ -6,7 +6,7 @@ import os.path
 from setuptools import setup
 
 install_requires = [
-    'pycrypto >=2.6',
+    'pycryptodome',
     'gmpy2 >=2',
     'six >=1.2',
 ]
@@ -44,6 +44,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     test_suite='seccure.tests',
 ),

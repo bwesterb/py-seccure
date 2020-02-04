@@ -1,10 +1,11 @@
 py-seccure Changelog
 ====================
 
-0.4.2 (unreleased)
+0.5.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Switch from PyCrypto to pycryptodome
+- Add support for Python 3.8
 
 
 0.4.1 (2020-02-04)
